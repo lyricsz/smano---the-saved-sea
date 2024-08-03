@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smano - The Saved Sea</title>
+    <link rel="stylesheet" href="./css/index.css">
+</head>
+<body>
+    <header>
+        <h1>Smano - The Saved Sea</h1>
+    </header>
+    <main>
+        <button id="play">Play</button>
+        <button id="highscore">Highscore</button>
+        <button id="about">About</button>
+        <button id="exit">Exit</button>
+    </main>
+    <footer>
+
+    </footer>
+    <script>
+        document.getElementById("play").onclick = () => {window.location = window.location + "/game/index.html"}
+        document.getElementById("highscore").onclick = () => {window.location =  window.location + "/highscore/index.html"}
+        document.getElementById("about").onclick = () => {window.location = "./about/index.html"}
+        document.getElementById("exit").onclick = () => {window.close()}
+    </script>
+</body>
+</html>
