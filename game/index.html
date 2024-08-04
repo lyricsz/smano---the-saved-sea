@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="../css/index.css">
     <style>
         body{
             background-color: #939333;
@@ -24,15 +25,33 @@
             transform: translate(-50%, -50%);
             text-align: center;
         }
+        #backBtn{
+            position: fixed;
+            right: 10px;
+            top: 10px;
+            background-color: transparent;
+            border: 1px solid red;
+            padding: 5px;
+            color: white;
+            cursor: pointer;
+        }
+        #backBtn:hover{
+            background-color: hsla(0, 100%, 50%, 0.2);
+        }
     </style>
 </head>
-<body onload="load()">
+<body>
+    <audio src="../assets/powerup.wav" id="powerup"></audio>
+    <audio src="../assets/hit.wav" id="hit"></audio>
+    <audio src="../assets/shoot.wav" id="shoot"></audio>
     <div id="startGame">
         <h2 id="level">Level 1</h2>
     </div>
-    <canvas id="canvas" width="768" height="1216">
+    <canvas id="canvas" width="384" height="608">
         Canvas is not supported!
     </canvas>
+    <div id="backBtn">Back</div>
     <script src="index.js"></script>
+
 </body>
 </html>

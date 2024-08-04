@@ -41,3 +41,8 @@ button{
     text-shadow: 0px 0px 4px skyblue, 2px -2px 2px gray;
     letter-spacing: 2px;
 }
+
+#level{
+    color: aliceblue;
+    font-weight: 900;
+}

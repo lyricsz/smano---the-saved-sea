@@ -22,5 +22,9 @@
     <mian>
         <p>Current Highscore: <span id="highscore">0</span></p>
     </mian>
+    <script>
+        if(Number(localStorage.getItem("smanoHighscore")) <= 0) localStorage.setItem("smanoHighscore", 0);
+        highscore.innerHTML = localStorage.getItem("smanoHighscore");
+    </script>
 </body>
 </html>
