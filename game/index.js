@@ -297,11 +297,13 @@ class Laser{
             if(enemy.markedForDeletion) return;
                 if(collision(enemy, this)){
                     hit.play()
+                    for(let i = 0; i < 10; i++){
+                        particles.push(new Particle(this.x + this.width*0.5, this.y, 20, 20, i - i * 0.5))
+                    }
                     this.markedForDeletion = true;
                     enemy.markedForDeletion = true;
                     enemy.update()
                     ui.score += 20;
-                    console.log(ui.score)
                     if((ui.score % nextLevel) == 0) {
                         currentLevel++;
                         if(currentLevel % laserMax == 0) {
@@ -336,6 +338,9 @@ class BigLaser extends Laser{
             if(enemy.markedForDeletion) return;
                 if(collision(enemy, this)){
                     hit.play()
+                    for(let i = 0; i < 10; i++){
+                        particles.push(new Particle(this.x + this.width*0.5, this.y, 20, 20, i - i * 0.5))
+                    }
                     enemy.markedForDeletion = true;
                     this.health--;
                     if(this.health == 0) this.markedForDeletion = true;
@@ -360,6 +365,34 @@ class BigLaser extends Laser{
         ctx.fillRect(this.x, this.y, this.width, this.height);
         ctx.fillStyle = this.color2;
         ctx.fillRect(this.x, this.y + 4, this.width, this.height - 8);
+    }
+}
+
+class Particle{
+    constructor(x, y, width, height, size){
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.color = randomVec4();
+        this.fillStyle = `rgba(${this.color.x}, ${this.color.y}, ${this.color.z}, ${this.color.a})`;
+        this.vx = Math.random() - 0.5;
+        this.vy = Math.random() - 0.5;
+        this.markedForDeletion = false;
+        this.size = size;
+    }
+    update(){
+        this.x+=this.vx;
+        this.y+=this.vy;
+        if(this.color.a < 0) this.markedForDeletion = true;
+        else this.color.a-=0.002; 
+    }
+    draw(ctx){
+        ctx.fillStyle = this.fillStyle;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill()
+        ctx.closePath();
     }
 }
 
@@ -418,14 +451,37 @@ class UI{
     }
 }
 
+class Joystick{
+    constructor(x, y, radius){
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+        this.innerRadius = radius - 10;
+    }
+    update(){
+
+    }
+    draw(ctx){
+        ctx.beginPath();
+        ctx.fillStyle = "gray";
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI);
+        ctx.fill();
+        ctx.fillStyle = "white";
+        ctx.arc(this.x, this.y, this.innerRadius, 0, Math.PI);
+        ctx.fill();
+        ctx.closePath();
+    }
+}
 
 let player = new Player(GAME_WIDTH * 0.5 - 32, GAME_HEIGHT * 0.5 - 32, 64, 64, 10);
 let miniPlayers = [new MiniPlayer(GAME_WIDTH * 0.5 - 32, GAME_HEIGHT * 0.5 - 32, 64, 64, 10)];
 let input = new Input();
 let ui = new UI(0, 30, 100)
+let joystick = new Joystick(window.innerWidth * 0.5, window.innerHeight * 0.5, 10);
 
 let enemiesArray = [];
 let enemiesAlive = [];
+let particles = [];
 
 for(let i = 0; i < 50; i++){
     enemiesArray.push(new Enemy(Math.max(0, Math.floor(Math.random() * GAME_WIDTH) - 64), -Math.floor(Math.random() * 200), 64, 64));
@@ -453,11 +509,11 @@ function animate() {
         update(deltaTime); // Update game logic here
         accumulator -= 1 / idealFrameRate;
     }
-
+   
     render(deltaTime); // Render game state here
 
     lastTime = now;
-    console.log(laserMax)
+
     requestAnimationFrame(animate);
 }
 
@@ -467,6 +523,8 @@ const idealFrameRate = 60;
 window.onload = animate;
 
 function update(deltaTime){
+    particles.forEach(particle=> particle.update());
+    particles = particles.filter((particle) => !particle.markedForDeletion)
     enemies.update();
     player.update();
     enemiesAlive = enemies.enemies.filter(enemy => !enemy.markedForDeletion)
@@ -475,6 +533,7 @@ function update(deltaTime){
     ui.update()
     miniPlayers = miniPlayers.filter((miniPlayer) => !miniPlayer.markedForDeletion)
     miniPlayers.forEach(miniPlayer => miniPlayer.update(deltaTime));
+    joystick.update()
     if(colorStamp >= 0.6) colorStamp = 0;
 }
 
@@ -483,7 +542,10 @@ function render(deltaTime){
     ui.draw(context);
     enemies.draw(context);
     player.draw(context);
+    particles.forEach(particle=> particle.draw(context));
+    
     miniPlayers.forEach(miniPlayer => miniPlayer.draw(context, deltaTime));
+    joystick.draw(context)
 }
 
 function randomVec4(){
